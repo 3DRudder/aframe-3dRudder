@@ -1,0 +1,36 @@
+---
+---
+
+@import "{{ site.theme }}";
+#project_title.color_3dRudder, .color_3dRudder
+{
+  color: #51fcce;
+}
+
+#forkme_banner.background_color_3dRudder, .background_color_3dRudder
+{
+  background-color: #51fcce;
+}
+.logo
+{
+  background: url(../images/3dR_FullSignature_Teal.png) no-repeat;
+  background-size: contain;
+  height: 100px;
+  width: 126px;
+  display: inline-block;
+}  
+
+img[alt=small_img] 
+{ 
+  width: 64px;
+}
+
+img[alt=medium_img] 
+{ 
+  width: 256px;
+}
+
+img[alt=big_img] 
+{ 
+  width: 512px;
+}
