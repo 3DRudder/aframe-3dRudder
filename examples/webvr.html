@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebVR SDK 3dRudder</title>
+    <script src="js/aframe.0.7.0.min.js"></script>
+    <script src="../dist/aframe-3dRudder.js"></script>
+</head>
+<body>
+    <a-scene stats>
+        <a-assets>
+            <a-mixin id="text" text="align: center; width: 6; value: 3dRudder WebVR; color: black"></a-mixin>            
+        </a-assets>
+        <a-entity 3drudder-controls="port:0;speed:5 1 10">
+            <a-camera>
+                <a-cursor></a-cursor>
+            </a-camera>
+        </a-entity>
+        <a-box position="-1 0.5 -3" rotation="0 0 0" color="#4CC3D9"></a-box>
+        <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere>
+        <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
+        <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
+        <a-text mixin="text" position="0 4 -5" wrap-count="20"></a-text>        
+        <a-sky color="#00FFFF"></a-sky>
+    </a-scene>
+</body>
+</html>

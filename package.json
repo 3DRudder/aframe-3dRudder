@@ -1,0 +1,37 @@
+{
+  "name": "aframe-3drudder",
+  "version": "1.0.0",
+  "description": "A-Frame component for the 3dRudder controller",
+  "main": "src/index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "build": "webpack --config ./webpack.config.js src/index.js dist/aframe-3dRudder.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/3DRudder/aframe-3dRudder.git"
+  },
+  "keywords": [
+    "3drudder",
+    "virtual",
+    "reality",
+    "foot-controller",
+    "a-frame",
+    "vr"
+  ],
+  "author": "mvivant",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/3DRudder/aframe-3dRudder/issues"
+  },
+  "homepage": "https://github.com/3DRudder/aframe-3dRudder#readme",
+  "devDependencies": {
+    "aframe": "^0.7.1",
+    "webpack": "^3.8.1"
+  },
+  "dependencies": {
+    "3drudder-js": "^1.0.0"
+  }
+}
