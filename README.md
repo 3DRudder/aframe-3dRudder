@@ -1,7 +1,7 @@
 ![license](https://img.shields.io/github/license/mashape/apistatus.svg)
 ![language](https://img.shields.io/badge/Language-javascript-green.svg) 
 ![Node.js](https://img.shields.io/badge/Node.js-v8.9.1-green.svg)
-![A-Frame](https://img.shields.io/badge/A-Frame-v0.7.0-green.svg)
+![A-Frame](https://img.shields.io/badge/AFrame-v0.7.0-green.svg)
 
 # A-Frame 3dRudder controller
 
@@ -32,6 +32,8 @@ speed: { type: 'vec3', default: { x:10, y:10, z:10 } },
 // Speed Rotation
 speedRotation: { type: 'number', default: 100 },
 ```
+
+# Sample [here](/examples/webvr.html)  
 
 # Build for browser
 * ```npm run-script build``` or ```webpack --config ./webpack.config.js src/index.js dist/aframe-3dRudder.js```

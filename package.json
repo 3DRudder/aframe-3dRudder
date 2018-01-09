@@ -32,6 +32,6 @@
     "webpack": "^3.8.1"
   },
   "dependencies": {
-    "3drudder-js": "^1.0.0"
+    "3drudder-js": "^1.0.1"
   }
 }
