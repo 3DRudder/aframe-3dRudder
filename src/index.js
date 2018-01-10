@@ -1,4 +1,4 @@
-var SDK = require('3drudder-js');
+var Sdk3dRudder = require('3drudder-js');
 
 // Locomotion 3dRudder a-Frame component
 AFRAME.registerComponent('3drudder-controls', {
@@ -12,13 +12,14 @@ AFRAME.registerComponent('3drudder-controls', {
     },
 
     init: function() {
-        SDK.init();      
+        this.SDK = new Sdk3dRudder();
+        this.SDK.init();      
         console.log('init 3dRudder controls');
         console.log('controller ' + this.data.port + ' speed ' + this.data.speed.y + ' mode ' + this.data.mode);        
     },
 
     tick: function(time, timeDelta) {
-        var rudder = SDK.controllers[this.data.port];
+        var rudder = this.SDK.controllers[this.data.port];
         if (rudder.connected) {     
             
             var deltaTime = timeDelta / 1000;
