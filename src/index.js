@@ -1,4 +1,4 @@
-var SDK = require('3drudder-js');
+var Sdk3dRudder = require('3drudder-js');
 
 // Locomotion 3dRudder a-Frame component
 AFRAME.registerComponent('3drudder-controls', {
@@ -12,13 +12,24 @@ AFRAME.registerComponent('3drudder-controls', {
     },
 
     init: function() {
-        SDK.init();      
+        this.SDK = new Sdk3dRudder();
+        this.SDK.init();      
         console.log('init 3dRudder controls');
-        console.log('controller ' + this.data.port + ' speed ' + this.data.speed.y + ' mode ' + this.data.mode);        
+        console.log('controller ' + this.data.port + ' speed ' + this.data.speed.y + ' mode ' + this.data.mode);  
+        this.SDK.on('connectedDevice' , function(device) { 
+            var controller = this.controllers[device.port];
+            controller.setModeAxis(controller.MODE.curveNonSymmectricalPitch);
+            controller.setCurves({
+                pitch: {deadzone: 0.1, xSat: 1.0, yMax: 1.0, exp: 2.0},
+                roll: {deadzone: 0.1, xSat: 1.0, yMax: 1.0, exp: 2.0},
+                yaw: {deadzone: 0.1, xSat: 1.0, yMax: 1.0, exp: 2.0},
+                updown: {deadzone: 0.1, xSat: 1.0, yMax: 1.0, exp: 2.0}
+            });
+        });      
     },
 
     tick: function(time, timeDelta) {
-        var rudder = SDK.controllers[this.data.port];
+        var rudder = this.SDK.controllers[this.data.port];
         if (rudder.connected) {     
             
             var deltaTime = timeDelta / 1000;
