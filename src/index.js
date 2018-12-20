@@ -17,13 +17,16 @@ AFRAME.registerComponent('3drudder-controls', {
         console.log('init 3dRudder controls');
         console.log('controller ' + this.data.port + ' speed ' + this.data.speed.y + ' mode ' + this.data.mode);  
         this.SDK.on('connectedDevice' , function(device) { 
-            var controller = this.controllers[device.port];
-            controller.setModeAxis(controller.MODE.curveNonSymmectricalPitch);
-            controller.setCurves({
-                pitch: {deadzone: 0.1, xSat: 1.0, yMax: 1.0, exp: 2.0},
-                roll: {deadzone: 0.1, xSat: 1.0, yMax: 1.0, exp: 2.0},
-                yaw: {deadzone: 0.1, xSat: 1.0, yMax: 1.0, exp: 2.0},
-                updown: {deadzone: 0.1, xSat: 1.0, yMax: 1.0, exp: 2.0}
+            var controller = this.controllers[device.port];            
+            controller.setAxesParam({
+                roll2YawCompensation: 0.15,
+                nonSymmetricalPitch: true,
+                curves: {
+                    leftright: {deadzone: 0.1, xSat: 1.0, exp: 2.0},
+                    forwardbackward: {deadzone: 0.1, xSat: 1.0, exp: 2.0},					
+                    updown: {deadzone: 0.1, xSat: 1.0, exp: 2.0},
+                    rotation: {deadzone: 0.1, xSat: 1.0, exp: 1.0}
+                }
             });
         });      
     },
@@ -34,10 +37,10 @@ AFRAME.registerComponent('3drudder-controls', {
             
             var deltaTime = timeDelta / 1000;
 
-            var roll = rudder.axis.roll * this.data.speed.x;
-            var pitch = -rudder.axis.pitch * this.data.speed.z;
+            var roll = rudder.axis.leftright * this.data.speed.x;
+            var pitch = -rudder.axis.forwardbackward * this.data.speed.z;
             var updown = rudder.axis.updown *  this.data.speed.y; // Y inverted
-            var yaw = -rudder.axis.yaw * this.data.speedRotation;
+            var yaw = -rudder.axis.rotation * this.data.speedRotation;
 
             // Rotate
             var rotation = this.el.getAttribute('rotation');
