@@ -3172,10 +3172,10 @@ var AxesParam = function() {
      *      Represent the exponentiel of curve
     */
    this.curves = {
-        leftright: {deadzone: 0.0, xSat: 1.0, exp: 1.0},
-        forwardbackward: {deadzone: 0.0, xSat: 1.0, exp: 1.0},                
-        updown: {deadzone: 0.0, xSat: 1.0, exp: 1.0},
-        rotation: {deadzone: 0.0, xSat: 1.0, exp: 1.0},
+        leftright: {deadzone: 0.15, xSat: 1.0, exp: 1.0},
+        forwardbackward: {deadzone: 0.15, xSat: 1.0, exp: 1.0},                
+        updown: {deadzone: 0.15, xSat: 1.0, exp: 1.0},
+        rotation: {deadzone: 0.15, xSat: 1.0, exp: 1.0},
     }
 
    /**
