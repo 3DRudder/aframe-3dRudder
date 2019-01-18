@@ -15,7 +15,7 @@ A-Frame component (v1.0.3) for the 3dRudder controller (v2.0.2)
 ```html
 <script src="../dist/aframe-3dRudder.js"></script>
 ...
-<a-entity 3drudder-controls="port:0;speed:5 1 10">
+<a-entity 3drudder-controls="port:0;speed:5 1 10;roll2YawCompensation: 0;rotation: 0.15 1 1">
   <a-camera>
     <a-cursor></a-cursor>
   </a-camera>
@@ -31,6 +31,18 @@ port: { type: 'number', default: 0, oneOf: [0, 1, 2, 3] },
 speed: { type: 'vec3', default: { x:10, y:10, z:10 } },
 // Speed Rotation
 speedRotation: { type: 'number', default: 100 },
+// Roll to Yaw compensation
+roll2YawCompensation: { type: 'number', default: 0.15 },
+// Non Symmetrical Pitch
+nonSymmetricalPitch: { default: true },
+// Left Right Axes Param
+leftright: { deadzone: 0.1, xSat: 1.0, exp: 2.0 },
+// Forward Backward Axes Param
+forwardbackward: { deadzone: 0.1, xSat: 1.0, exp: 2.0 },
+// Up Down Axes Param
+updown: { deadzone: 0.1, xSat: 1.0, exp: 2.0 },
+// Rotation Axes Param
+rotation: { deadzone: 0.1, xSat: 1.0, exp: 2.0 },
 ```
 
 # Sample [here](/examples/webvr.html)  

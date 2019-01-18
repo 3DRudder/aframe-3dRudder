@@ -1,31 +1,50 @@
 var Sdk3dRudder = require('3drudder-js');
 
+var parseAxesParam = function(value) {
+    data = value.split(' ');
+    return {deadzone: parseFloat(data[0], 10), xSat: parseFloat(data[1], 10), exp: parseFloat(data[2], 10)} 
+}
+
 // Locomotion 3dRudder a-Frame component
 AFRAME.registerComponent('3drudder-controls', {
     schema: {
         // Controller 0-3
         port: { type: 'number', default: 0, oneOf: [0, 1, 2, 3] },
         // Speed Translation
-        speed: { type: 'vec3', default: { x:10, y:10, z:10 } },
+        speed: { type: 'vec3', default: { x:10, y:10, z:10 } }, // roll, up, pitch
         // Speed Rotation
-        speedRotation: { type: 'number', default: 100 },        
+        speedRotation: { type: 'number', default: 100 },
+        // Roll to Yaw compensation
+        roll2YawCompensation: { type: 'number', default: 0.15 },
+        // Non Symmetrical Pitch
+        nonSymmetricalPitch: { default: true },
+        // Left Right Axes Param
+        leftright: { type: 'string', default: "0.1 1.0 2.0", parse: parseAxesParam },        
+        // Forward Backward Axes Param
+        forwardbackward: { type: 'string', default: "0.1 1.0 2.0", parse: parseAxesParam },
+        // Up Down Axes Param
+        updown: { type: 'string', default: "0.1 1.0 2.0", parse: parseAxesParam },
+        // Rotation Axes Param
+        rotation: { type: 'string', default: "0.1 1.0 2.0", parse: parseAxesParam },
     },
+
+    
 
     init: function() {
         this.SDK = new Sdk3dRudder();
         this.SDK.init();      
         console.log('init 3dRudder controls');
-        console.log('controller ' + this.data.port + ' speed ' + this.data.speed.y + ' mode ' + this.data.mode);  
-        this.SDK.on('connectedDevice' , function(device) { 
-            var controller = this.controllers[device.port];            
+        console.log('controller ' + this.data.port + ' speed ' + this.data.speed.y);  
+        this.SDK.on('connectedDevice' , (device) => { 
+            var controller = this.SDK.controllers[device.port];            
             controller.setAxesParam({
-                roll2YawCompensation: 0.15,
-                nonSymmetricalPitch: true,
+                roll2YawCompensation: this.data.roll2YawCompensation,
+                nonSymmetricalPitch: this.data.nonSymmetricalPitch,
                 curves: {
-                    leftright: {deadzone: 0.1, xSat: 1.0, exp: 2.0},
-                    forwardbackward: {deadzone: 0.1, xSat: 1.0, exp: 2.0},					
-                    updown: {deadzone: 0.1, xSat: 1.0, exp: 2.0},
-                    rotation: {deadzone: 0.1, xSat: 1.0, exp: 1.0}
+                    leftright: this.data.leftright,
+                    forwardbackward: this.data.forwardbackward,					
+                    updown: this.data.updown,
+                    rotation: this.data.rotation
                 }
             });
         });      
