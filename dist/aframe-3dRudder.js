@@ -2103,14 +2103,34 @@ AFRAME.registerComponent('3drudder-controls', {
         updown: { type: 'string', default: "0.1 1.0 2.0", parse: parseAxesParam },
         // Rotation Axes Param
         rotation: { type: 'string', default: "0.1 1.0 2.0", parse: parseAxesParam },
+        // Options for connection
+        secu: { default: true},
+        discovery: { default: false},
     },
 
     
 
     init: function() {
-        this.SDK = new Sdk3dRudder();
-        this.SDK.init();      
-        console.log('init 3dRudder controls');
+        var options;
+        if (this.data.secu)
+            options = {"schemeWs":"wss"};
+        else
+            options = {"schemeWs":"ws"};
+        this.SDK = new Sdk3dRudder(options);
+        if (this.data.discovery) {      
+            this.SDK.startDiscovery();
+            this.SDK.on('discovery', (urls) => {
+                if (urls.length > 0) {
+                    this.SDK.host = urls[0].ip;
+                    this.SDK.init();
+                } else {
+                    console.log("no servers found");
+                }
+            });
+        } else {
+            this.SDK.init();
+            console.log('init 3dRudder controls');
+        }        
         console.log('controller ' + this.data.port + ' speed ' + this.data.speed.y);  
         this.SDK.on('connectedDevice' , (device) => { 
             var controller = this.SDK.controllers[device.port];            
@@ -2165,7 +2185,7 @@ AFRAME.registerComponent('3drudder-controls', {
 
 /* WEBPACK VAR INJECTION */(function(process) {/*!
  * 
- * 3dRudder v1.0.0                                                  
+ * 3dRudder v2.0.3                                                  
  * https://github.com/3DRudder/3dRudderjs                                        
  *                                                                             
  * Copyright 2017 3dRudder, Inc. and other contributors                      
@@ -2179,6 +2199,7 @@ var WebSocket = isNode ? __webpack_require__(5) : (window.WebSocket || window.Mo
     , _ = __webpack_require__(0)
     , EventEmitter = __webpack_require__(1).EventEmitter
     , Controller = __webpack_require__(8);
+const fetch = __webpack_require__(10);
 
 /**
  * Sdk constructor.
@@ -2188,6 +2209,16 @@ var WebSocket = isNode ? __webpack_require__(5) : (window.WebSocket || window.Mo
 */
 var Sdk = function(opts) {
     opts = opts || {};
+    /**
+     * if use the discovery by default
+     * @type {url}
+    */
+   this.discovery = opts.discovery || false;
+    /**
+     * the host of server
+     * @type {url}
+    */
+    this.discoveryUrl = opts.discoveryUrl || 'stun:224.0.0.82:15661';
     /**
      * the host of server
      * @type {url}
@@ -2305,6 +2336,9 @@ var Sdk = function(opts) {
             controller.default();
         });
     });
+
+    if (this.discovery)
+        this.startDiscovery();
 }
 
 /**
@@ -2525,6 +2559,42 @@ Sdk.prototype.freeze = function (port, freeze, callback) {
 Sdk.prototype.hide = function (port, hide, callback) {
     console.log('hide SDK');
     this.controllers[port].setHide(hide, callback);
+}
+
+/**
+ * Discovery for 3dRudder network.
+ *  
+*/
+Sdk.prototype.startDiscovery = function () {
+    console.log('discovery SDK');
+    var localConnection = new RTCPeerConnection({iceServers: [{urls: [this.discoveryUrl]}]});
+    localConnection.createDataChannel('discovery');
+    var _this = this;
+    localConnection.createOffer()
+    .then((desc) => {
+        console.log("setlocaldesc");
+        localConnection.setLocalDescription(desc);        
+        setTimeout(() => _this.stopDiscovery(localConnection), 1000);
+    }, (error) => {
+        console.log("error create offer" + error);
+    });
+}
+
+/**
+ * Stop the discovery for 3dRudder network.
+ *  
+*/
+Sdk.prototype.stopDiscovery = function (localConnection) {    
+    console.log("discovery end");
+    localConnection.close();
+    var _this = this;
+    // fetch json
+    fetch('http://wb.3drudder-dev.com/WV/C.php')
+    .then(res => res.text())
+    .then(body => {
+        let urls = JSON.parse(body);        
+        _this.emit('discovery', urls);
+    });    
 }
 
 _.extend(Sdk.prototype, EventEmitter.prototype);
@@ -2789,7 +2859,7 @@ module.exports = function(module) {
 
 /*!
  * 
- * 3dRudder v1.0.0                                                  
+ * 3dRudder v2.0.3                                                  
  * https://github.com/3DRudder/3dRudderjs                                        
  *                                                                             
  * Copyright 2017 3dRudder, Inc. and other contributors                      
@@ -2879,14 +2949,12 @@ Controller.prototype.init = function(SDK, device) {
 /**
  * Update function.
  * @private
- * @param {SDK} SDK
- *   SDK object
- * @param {object} device
+ * @param {object} controller
  *   All infos of connected device.
 */
 Controller.prototype.update = function(controller) {
     if (controller.error) {
-        console.log("error update controller " + error);
+        console.log("error update controller " + SDK.getErrorString(controller.error));
     }
     else {
         this.sensors = controller.sensors;
@@ -3155,7 +3223,7 @@ module.exports = Controller;
 
 /*!
  * 
- * 3dRudder v1.0.0                                                  
+ * 3dRudder v2.0.3                                                  
  * https://github.com/3DRudder/3dRudderjs                                        
  *                                                                             
  * Copyright 2017 3dRudder, Inc. and other contributors                      
@@ -3213,6 +3281,35 @@ var AxesParam = function() {
 //_.extend(Controller.prototype, EventEmitter.prototype);
 
 module.exports = AxesParam;
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// ref: https://github.com/tc39/proposal-global
+var getGlobal = function () {
+	// the only reliable means to get the global object is
+	// `Function('return this')()`
+	// However, this causes CSP violations in Chrome apps.
+	if (typeof self !== 'undefined') { return self; }
+	if (typeof window !== 'undefined') { return window; }
+	if (typeof global !== 'undefined') { return global; }
+	throw new Error('unable to locate global object');
+}
+
+var global = getGlobal();
+
+module.exports = exports = global.fetch;
+
+// Needed for TypeScript and Webpack.
+exports.default = global.fetch.bind(global);
+
+exports.Headers = global.Headers;
+exports.Request = global.Request;
+exports.Response = global.Response;
 
 /***/ })
 /******/ ]);

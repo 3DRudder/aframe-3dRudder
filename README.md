@@ -5,7 +5,7 @@
 
 # A-Frame 3dRudder controller
 
-A-Frame component (v1.0.3) for the 3dRudder controller (v2.0.2)
+A-Frame component (v1.0.4) for the 3dRudder controller (v2.0.2)
 
 # Installation
 * ```npm install aframe-3drudder```
@@ -21,7 +21,14 @@ A-Frame component (v1.0.3) for the 3dRudder controller (v2.0.2)
   </a-camera>
 </a-entity>
 ```
-
+No secure and discovery options
+```html
+<a-entity 3drudder-controls="secu:false;discovery:true;port:0;speed:5 5 5;speedRotation:50;">
+    <a-camera>
+        <a-cursor></a-cursor>
+    </a-camera>
+</a-entity>
+```
 # API
 * Properties
 ```javascript
@@ -43,6 +50,9 @@ forwardbackward: { deadzone: 0.1, xSat: 1.0, exp: 2.0 },
 updown: { deadzone: 0.1, xSat: 1.0, exp: 2.0 },
 // Rotation Axes Param
 rotation: { deadzone: 0.1, xSat: 1.0, exp: 2.0 },
+// Options for connection
+secu: { default: true},
+discovery: { default: false}, // connect to 3dRudder network
 ```
 
 # Sample [here](/examples/webvr.html)  
