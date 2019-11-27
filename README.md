@@ -11,7 +11,9 @@ A-Frame component (v1.0.4) for the 3dRudder controller (v2.0.2)
 * ```npm install aframe-3drudder```
 
 # Usage
+
 * HTML
+
 ```html
 <script src="../dist/aframe-3dRudder.js"></script>
 ...
@@ -21,7 +23,9 @@ A-Frame component (v1.0.4) for the 3dRudder controller (v2.0.2)
   </a-camera>
 </a-entity>
 ```
-No secure and discovery options
+
+* No secure and discovery options
+
 ```html
 <a-entity 3drudder-controls="secu:false;discovery:true;port:0;speed:5 5 5;speedRotation:50;">
     <a-camera>
@@ -29,8 +33,11 @@ No secure and discovery options
     </a-camera>
 </a-entity>
 ```
+
 # API
+
 * Properties
+
 ```javascript
 // Controller 0-3
 port: { type: 'number', default: 0, oneOf: [0, 1, 2, 3] },
@@ -52,7 +59,8 @@ updown: { deadzone: 0.1, xSat: 1.0, exp: 2.0 },
 rotation: { deadzone: 0.1, xSat: 1.0, exp: 2.0 },
 // Options for connection
 secu: { default: true},
-discovery: { default: false}, // connect to 3dRudder network
+// connect to 3dRudder network
+discovery: { default: false}, 
 ```
 
 # Sample [here](/examples/webvr.html)  
