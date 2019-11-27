@@ -2105,10 +2105,20 @@ AFRAME.registerComponent('3drudder-controls', {
         rotation: { type: 'string', default: "0.1 1.0 2.0", parse: parseAxesParam },
         // Options for connection
         secu: { default: true},
-        discovery: { default: false},
     },
 
-    
+    discovery: function() {        
+        this.SDK.startDiscovery();
+        this.SDK.on('discovery', (urls) => {
+            this.el.emit('discovered', {"urls":urls});
+        });
+    },
+
+    connect: function(ip) {
+        this.SDK.stop();
+        this.SDK.host = ip;
+        this.SDK.init();
+    },
 
     init: function() {
         var options;
@@ -2116,21 +2126,8 @@ AFRAME.registerComponent('3drudder-controls', {
             options = {"schemeWs":"wss"};
         else
             options = {"schemeWs":"ws"};
-        this.SDK = new Sdk3dRudder(options);
-        if (this.data.discovery) {      
-            this.SDK.startDiscovery();
-            this.SDK.on('discovery', (urls) => {
-                if (urls.length > 0) {
-                    this.SDK.host = urls[0].ip;
-                    this.SDK.init();
-                } else {
-                    console.log("no servers found");
-                }
-            });
-        } else {
-            this.SDK.init();
-            console.log('init 3dRudder controls');
-        }        
+        this.SDK = new Sdk3dRudder(options);        
+        this.SDK.init();
         console.log('controller ' + this.data.port + ' speed ' + this.data.speed.y);  
         this.SDK.on('connectedDevice' , (device) => { 
             var controller = this.SDK.controllers[device.port];            

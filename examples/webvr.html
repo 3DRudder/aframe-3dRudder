@@ -4,13 +4,53 @@
     <title>WebVR SDK 3dRudder</title>
     <script src="js/aframe.0.7.0.min.js"></script>
     <script src="../dist/aframe-3dRudder.js"></script>
+    <script>
+        function tryDiscovery() {
+            document.getElementById('servers').innerHTML = `looking for servers...`;            
+            var rudder = document.querySelector('#rudder');
+            rudder.addEventListener('discovered', onDiscovery);
+            rudder.components['3drudder-controls'].discovery();
+        }
+
+        function connect() {    
+            var radio = document.querySelector('input[name="server"]:checked');        
+            var rudder = document.querySelector('#rudder').components['3drudder-controls'].connect(radio.value);
+        }
+
+        function onDiscovery(event) {
+            var urls = event.detail.urls;
+            document.getElementById('servers').innerHTML = `<label for="server">${urls.length} server(s) found</label>`;
+            if (urls.length > 0) {
+                //this.host = urls[i].ip;                
+                var selectList = document.createElement("fieldset");
+                selectList.id = "server";
+                document.getElementById('servers').appendChild(selectList);
+                var list = document.createElement("ul");
+                for(i in urls) {
+                    var url = document.createElement("li");
+                    var option = document.createElement("input");
+                    option.type = "radio";
+                    option.value = urls[i].ip;
+                    option.name = "server";
+                    option.id = i;
+                    //option.text = decodeURIComponent(escape(urls[i].name));                    
+                    url.appendChild(option);
+                    url.innerHTML += `<label for="${i}">${decodeURIComponent(escape(urls[i].name))}</label>`;  
+                    list.appendChild(url);
+                    //document.getElementById('servers').innerHTML += `<option value=${urls[i].ip}>Ip: ${urls[i].ip} name: ${decodeURIComponent(escape(urls[i].name))} </option>`;
+                }
+                selectList.appendChild(list);
+                selectList.innerHTML += `<button id="button" onClick="connect()">Start connection</button>`;
+            }
+        }
+    </script>
 </head>
 <body>
     <a-scene stats>
         <a-assets>
             <a-mixin id="text" text="align: center; width: 6; value: 3dRudder WebVR; color: black"></a-mixin>            
         </a-assets>
-        <a-entity 3drudder-controls="secu:false;discovery:true;port:0;speed:5 5 5;speedRotation:50;">
+        <a-entity id="rudder" 3drudder-controls="secu:false;port:0;speed:5 5 5;speedRotation:50;">
             <a-camera>
                 <a-cursor></a-cursor>
             </a-camera>
@@ -22,5 +62,16 @@
         <a-text mixin="text" position="0 4 -5" wrap-count="20"></a-text>        
         <a-sky color="#00FFFF"></a-sky>
     </a-scene>
+    <!-- UI for discovery -->
+    <div class="rs-base" style="right: 20px;left: auto;">
+        <div class="rs-container" style="height: auto;">
+            <h1>Bridge Servers</h1>
+            <button id="disco" onClick="tryDiscovery()">Try Discovery</button>
+            <div id="servers"></div>
+            <div class="rs-group">
+                <div id="servers"></div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

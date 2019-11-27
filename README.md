@@ -27,7 +27,23 @@ A-Frame component (v1.0.4) for the 3dRudder controller (v2.0.2)
 * No secure and discovery options
 
 ```html
-<a-entity 3drudder-controls="secu:false;discovery:true;port:0;speed:5 5 5;speedRotation:50;">
+<script>
+// get element
+var rudder = document.querySelector('#rudder');
+// add event to discovery
+rudder.addEventListener('discovered', onDiscovery);
+// call the discovery
+rudder.components['3drudder-controls'].discovery();
+// check url
+function onDiscovery(event) {
+  var urls = event.detail.urls;
+  // url is an array of {"ip":"127.0.0.1, "name": "Bridge server"}
+  if (urls.length > 0) {
+    var rudder = document.querySelector('#rudder').components['3drudder-controls'].connect(urls[0].ip);
+  }
+}
+</script>
+<a-entity id="rudder" 3drudder-controls="secu:false;port:0;speed:5 5 5;speedRotation:50;">
     <a-camera>
         <a-cursor></a-cursor>
     </a-camera>
@@ -59,8 +75,6 @@ updown: { deadzone: 0.1, xSat: 1.0, exp: 2.0 },
 rotation: { deadzone: 0.1, xSat: 1.0, exp: 2.0 },
 // Options for connection
 secu: { default: true},
-// connect to 3dRudder network
-discovery: { default: false}, 
 ```
 
 # Sample [here](/examples/webvr.html)  
