@@ -73,7 +73,7 @@ forwardbackward: { deadzone: 0.1, xSat: 1.0, exp: 2.0 },
 updown: { deadzone: 0.1, xSat: 1.0, exp: 2.0 },
 // Rotation Axes Param
 rotation: { deadzone: 0.1, xSat: 1.0, exp: 2.0 },
-// Options for connection
+// Options for connection, true: use 'wss' and false: 'ws' for websockets
 secu: { default: true},
 ```
 
