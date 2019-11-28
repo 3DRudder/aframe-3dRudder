@@ -2240,12 +2240,12 @@ var Sdk = function(opts) {
      * try to reconnect in ms
      * @type {bool}
     */
-   this.autoReconnect = false;
+   this.autoReconnect = opts.autoReconnect || true;
     /**
      * the time to try to reconnect in ms
      * @type {integer}
     */
-    this.autoReconnectInterval = 5*1000;
+    this.autoReconnectInterval = opts.autoReconnectInterval || 5*100;
     // SDK params
     this.default();
 
@@ -2395,6 +2395,7 @@ Sdk.prototype.setupConnection = function () {
     // 1) save this in variable _this
     // 2) use .bind(this) like onMessage
     var _this = this;
+    console.log('try connect on ' + this.getWsUrl());
     var connection = new WebSocket(this.getWsUrl());
     this.connection = connection;
     connection.onopen = function(event) { 
