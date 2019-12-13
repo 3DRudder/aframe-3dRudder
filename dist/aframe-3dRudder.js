@@ -2115,11 +2115,15 @@ AFRAME.registerComponent('3drudder-controls', {
     },
 
     connect: function(ip) {
-        this.SDK.stop();
+        this.disconnect();
         this.SDK.host = ip;
         this.SDK.init();
     },
 
+    disconnect: function() {
+        this.SDK.stop();
+    },
+    
     init: function() {
         var options;
         if (this.data.secu)
@@ -2129,7 +2133,8 @@ AFRAME.registerComponent('3drudder-controls', {
         this.SDK = new Sdk3dRudder(options);        
         this.SDK.init();
         console.log('controller ' + this.data.port + ' speed ' + this.data.speed.y);  
-        this.SDK.on('connectedDevice' , (device) => { 
+        this.SDK.on('connectedDevice' , (device) => {             
+            this.el.emit('connected', device);
             var controller = this.SDK.controllers[device.port];            
             controller.setAxesParam({
                 roll2YawCompensation: this.data.roll2YawCompensation,
@@ -2141,6 +2146,9 @@ AFRAME.registerComponent('3drudder-controls', {
                     rotation: this.data.rotation
                 }
             });
+        });
+        this.SDK.on('end', () => {
+            this.el.emit('close', null);
         });      
     },
 
@@ -2461,7 +2469,7 @@ Sdk.prototype.onMessage = function (message) {
 */
 Sdk.prototype.stopConnection = function () {
     if (this.connection) {
-        this.connection.close();
+        this.connection.close(1000);
     }
 }
 

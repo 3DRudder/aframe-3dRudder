@@ -5,6 +5,28 @@
     <script src="js/aframe.0.7.0.min.js"></script>
     <script src="../dist/aframe-3dRudder.js"></script>
     <script>
+
+        window.addEventListener('DOMContentLoaded', (event) => {
+            var rudder = document.querySelector('#rudder');
+            rudder.addEventListener('connected', onConnected);
+            rudder.addEventListener('close', onClose);
+        });
+
+        function onConnected(event) {
+            var device = event.detail;
+            document.getElementById('status').innerHTML = `device ${device.port}: connected ${device.connected}`;
+            if (device.connected) {
+                document.getElementById("button").innerHTML = 'Stop connection';                
+                connected = true;
+            }
+        }
+
+        function onClose(event) {
+            document.getElementById('status').innerHTML = `connection off`;            
+            document.getElementById("button").innerHTML = 'Start connection';                
+            connected = false;
+        }
+
         function tryDiscovery() {
             document.getElementById('servers').innerHTML = `looking for servers...`;            
             var rudder = document.querySelector('#rudder');
@@ -12,17 +34,26 @@
             rudder.components['3drudder-controls'].discovery();
         }
 
-        function connect() {    
-            var radio = document.querySelector('input[name="server"]:checked');
-            let textIp = document.getElementById("ip").value;            
+        var connected = false;
+        function connect() {  
             var rudder = document.querySelector('#rudder').components['3drudder-controls'];
-            if (radio)
-                rudder.connect(radio.value);
-            else if (textIp)
-                rudder.connect(textIp);
+            if (!connected) { 
+                var radio = document.querySelector('input[name="server"]:checked');
+                let textIp = document.getElementById("ip").value;                            
+                if (radio)
+                    rudder.connect(radio.value);
+                else if (textIp)
+                    rudder.connect(textIp);
+            } else {
+                rudder.disconnect();
+                connected = false;
+            }
         }
 
         function onDiscovery(event) {
+            var rudder = document.querySelector('#rudder');
+            rudder.removeEventListener('discovered', onDiscovery);
+
             var urls = event.detail.urls;
             document.getElementById('servers').innerHTML = `<label for="server">${urls.length} server(s) found</label>`;
             if (urls.length > 0) {
@@ -45,6 +76,8 @@
                     //document.getElementById('servers').innerHTML += `<option value=${urls[i].ip}>Ip: ${urls[i].ip} name: ${decodeURIComponent(escape(urls[i].name))} </option>`;
                 }
                 selectList.appendChild(list);                
+            } else {
+                document.getElementById("help").hidden = false;
             }
         }
     </script>
@@ -76,12 +109,13 @@
             <div class="rs-group">
                 <div id="servers"></div>
             </div>
-            <div>
+            <div id="help" hidden=true>
                 <p>If you don't find server, you can enter the IP:</p>
                 <p>You can find the IP on the <a href="https://support.3drudder.com/portal/kb/articles/dashboard-user-manual#About_Page">About page</a> of 3dRudder Dashboard</p>
-                <input type="text" id="ip" placeholder="192.168.1.X">
-                <button id="button" onClick="connect()">Start connection</button>
+                <input type="text" id="ip" placeholder="192.168.1.X">                
             </div>
+            <button id="button" onClick="connect()">Start connection</button>
+            <div id="status"></div>
         </div>
     </div>
 </body>
