@@ -1,0 +1,4 @@
+.git
+*.lock
+_site
+*.tgz

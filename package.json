@@ -1,6 +1,6 @@
 {
   "name": "aframe-3drudder",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "A-Frame component for the 3dRudder controller",
   "main": "src/index.js",
   "directories": {
@@ -32,6 +32,6 @@
     "webpack": "^3.8.1"
   },
   "dependencies": {
-    "3drudder-js": "^2.0.4"
+    "3drudder-js": "^2.0.6"
   }
 }

@@ -38,9 +38,8 @@ AFRAME.registerComponent('3drudder-controls', {
     },
 
     connect: function(ip) {
-        this.disconnect();
-        this.SDK.host = ip;
-        this.SDK.init();
+        this.disconnect();        
+        this.SDK.init(ip);
     },
 
     disconnect: function() {
