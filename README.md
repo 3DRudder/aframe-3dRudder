@@ -6,6 +6,7 @@
 # A-Frame 3dRudder controller
 
 A-Frame component (v1.0.6) for the 3dRudder controller (v2.0.6)
+[NPM](https://www.npmjs.com/package/aframe-3drudder)
 
 # Installation
 * ```npm install aframe-3drudder```
